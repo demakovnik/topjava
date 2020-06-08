@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Meal {
 
-    private int uuid;
+    private int id;
 
     private final LocalDateTime dateTime;
 
@@ -20,14 +20,14 @@ public class Meal {
     }
 
     public Meal(int uuid, LocalDateTime dateTime, String description, int calories) {
-        this.uuid = uuid;
+        this.id = uuid;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
     }
 
-    public int getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
     }
 
     public LocalDateTime getDateTime() {
@@ -50,7 +50,7 @@ public class Meal {
         return dateTime.toLocalTime();
     }
 
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -13,7 +13,7 @@
 
 <section>
     <form method="post" enctype="application/x-www-form-urlencoded">
-        <input id="uuid" type="hidden" name="uuid" value="${meal.uuid}">
+        <input id="mealid" type="hidden" name="mealid" value="${meal.id}">
         <label for="mealtime">Enter a date and time:</label>
         <input id="mealtime" type="datetime-local" name="mealtime" value="${meal.dateTime}">
         <label for="description">Enter description:</label>

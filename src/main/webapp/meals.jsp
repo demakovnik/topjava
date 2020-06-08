@@ -26,11 +26,11 @@
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
             <tr style="color:${meal.excess ? "red" : "green"}">
 
-                <td>${meal.dateTime.toLocalDate().format(dateFormatter)} ${meal.dateTime.toLocalTime().format(timeFormatter)}</td>
+                <td>${meal.dateTime.format(dateTimeFormatter)}</td>
                 <td>${meal.calories}</td>
                 <td>${meal.description}</td>
-                <td><a href="meals?action=delete&uuid=${meal.uuid}">Delete</a> </td>
-                <td><a href="meals?action=edit&uuid=${meal.uuid}">Edit</a> </td>
+                <td><a href="meals?action=delete&id=${meal.id}">Delete</a> </td>
+                <td><a href="meals?action=edit&id=${meal.id}">Edit</a> </td>
 
             </tr>
         </c:forEach>
