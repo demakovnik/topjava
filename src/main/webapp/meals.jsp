@@ -20,6 +20,14 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter">
+        <p>Start Date: <input type="date" name="start_date" value="${param.start_date}"></p>
+        <p>Start Time: <input type="time" name="start_time" value="${param.start_time}"></p>
+        <p>End Date: <input type="date" name="end_date" value="${param.end_date}"></p>
+        <p>End Time: <input type="time" name="end_time" value="${param.end_time}"></p>
+        <button type="submit">Filter</button>
+    </form>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
