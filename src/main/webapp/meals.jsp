@@ -21,7 +21,7 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <form method="get" action="meals">
-        <input type="hidden" name="action" value="filter">
+        <input type="hidden" name="action" value="filtrate">
         <p>Start Date: <input type="date" name="start_date" value="${param.start_date}"></p>
         <p>Start Time: <input type="time" name="start_time" value="${param.start_time}"></p>
         <p>End Date: <input type="date" name="end_date" value="${param.end_date}"></p>

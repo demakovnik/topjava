@@ -21,6 +21,8 @@ public class InMemoryMealRepository implements MealRepository {
         MealsUtil.MEALS.stream().forEach(meal -> save(meal, 1));
         save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), 2);
         save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 01, 10, 0), "Завтрак", 300), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 01, 13, 0), "Обед", 1200), 2);
     }
 
     @Override
