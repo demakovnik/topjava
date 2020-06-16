@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
@@ -18,11 +19,11 @@ public class InMemoryMealRepository implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.stream().forEach(meal -> save(meal, 1));
+        MealsUtil.MEALS.forEach(meal -> save(meal, 1));
         save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), 2);
         save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000), 2);
-        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 01, 10, 0), "Завтрак", 300), 2);
-        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 01, 13, 0), "Обед", 1200), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 1, 10, 0), "Завтрак", 300), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 1, 13, 0), "Обед", 1200), 2);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         Map<Integer, Meal> userMeals = repository.get(userId);
         return userMeals != null ? userMeals
                 .values()
@@ -59,6 +60,12 @@ public class InMemoryMealRepository implements MealRepository {
                         .comparing(Meal::getDateTime)
                         .reversed())
                 .collect(Collectors.toList()) : Collections.emptyList();
+    }
+
+    @Override
+    public List<Meal> getAllByDate(LocalDate localDate, int userId) {
+        return getAll(userId).stream().filter(meal -> meal.getDate().equals(localDate))
+                .collect(Collectors.toList());
     }
 }
 

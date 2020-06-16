@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MealRestController {
-
     private MealService service;
 
     @Autowired
@@ -33,31 +32,34 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(userId), caloriesPerDay);
     }
 
-    public Collection<MealTo> getAllfilteredByDateAndTime(String startDateString,
-                                                          String startTimeString,
-                                                          String endDateString,
-                                                          String endTimeString) {
-        LocalDate startDate = startDateString.equals("") ?
-                LocalDate.MIN : LocalDate.parse(startDateString);
-        LocalTime startTime = startTimeString.equals("") ?
-                LocalTime.MIN : LocalTime.parse(startTimeString);
-        LocalDate endDate = endDateString.equals("") ?
-                LocalDate.MAX : LocalDate.parse(endDateString);;
-        LocalTime endTime = endTimeString.equals("") ?
-                LocalTime.MAX : LocalTime.parse(endTimeString);;
-        return getAll()
-                .stream()
-                .filter(mealTo -> {
-                    LocalDateTime ldt = mealTo.getDateTime();
-                    LocalDate currentDate = ldt.toLocalDate();
-                    LocalTime currentTime = ldt.toLocalTime();
-                    return (currentDate.compareTo(startDate) >= 0
-                            && currentDate.compareTo(endDate) <= 0) &&
-                            (currentTime.compareTo(startTime) >= 0
-                                    && (currentTime.compareTo(endTime) < 0));
-                }).collect(Collectors.toList());
+    public Collection<MealTo> getAllfilteredByDateAndTime (LocalDate startDate,
+                                                          LocalTime startTime,
+                                                          LocalDate endDate,
+                                                          LocalTime endTime) {
+        int userId = SecurityUtil.authUserId();
+        int caloriesPerDay = SecurityUtil.authUserCaloriesPerDay();
+        LocalDate finalStartDate = startDate == null ?
+                LocalDate.MIN : startDate;
+        LocalTime finalStartTime = startTime == null ?
+                LocalTime.MIN : startTime;
+        LocalDate finalEndDate = endDate == null ?
+                LocalDate.MAX : endDate;
+        LocalTime finalEndTime = endTime == null ?
+                LocalTime.MAX : endTime;
+        return MealsUtil.getTos(service.getAll(userId).stream()
+                .map(Meal::getDateTime)
+                .filter(localDateTime -> {
+                    LocalDate currentDate = localDateTime.toLocalDate();
+                    LocalTime currentTime = localDateTime.toLocalTime();
+                    return (currentDate.compareTo(finalStartDate) >= 0
+                            && currentDate.compareTo(finalEndDate) <= 0) &&
+                            (currentTime.compareTo(finalStartTime) >= 0
+                                    && (currentTime.compareTo(finalEndTime) < 0));
+                }).map(LocalDateTime::toLocalDate)
+                .distinct()
+                .map(localDate -> service.getAllByDate(localDate, userId))
+                .flatMap(Collection::stream).collect(Collectors.toList()), caloriesPerDay);
     }
-
 
     public Meal get(int id) {
         int userId = SecurityUtil.authUserId();
@@ -66,6 +68,7 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         int userId = SecurityUtil.authUserId();
+        ValidationUtil.checkNew(meal);
         return service.create(meal, userId);
     }
 
