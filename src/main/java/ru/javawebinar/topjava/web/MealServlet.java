@@ -22,10 +22,8 @@ import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
     private MealRestController mealRestController;
     private ConfigurableApplicationContext configurableApplicationContext;
-
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -65,10 +63,14 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         switch (action == null ? "all" : action) {
             case "filtrate":
-                LocalDate startDate = LocalDate.parse(request.getParameter("start_date"));
-                LocalTime startTime = LocalTime.parse(request.getParameter("start_time"));
-                LocalDate endDate = LocalDate.parse(request.getParameter("end_date"));
-                LocalTime endTime = LocalTime.parse(request.getParameter("end_time"));
+                String startDateString = request.getParameter("start_date");
+                String startTimeString = request.getParameter("start_time");
+                String endDateString = request.getParameter("end_date");
+                String endTimeString = request.getParameter("end_time");
+                LocalDate startDate = startDateString.isEmpty() ? null : LocalDate.parse(startDateString);
+                LocalTime startTime = startTimeString.isEmpty() ? null : LocalTime.parse(startTimeString);
+                LocalDate endDate = endDateString.isEmpty() ? null : LocalDate.parse(endDateString);
+                LocalTime endTime = endTimeString.isEmpty() ? null : LocalTime.parse(endTimeString);
                 log.info("get filtered meals");
                 request.setAttribute("meals",
                         mealRestController
