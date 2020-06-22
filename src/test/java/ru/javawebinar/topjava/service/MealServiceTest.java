@@ -48,7 +48,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(MEAL_ID, USER_ID);
-        assertMatch(meal, MEAL);
+        assertMatch(meal, MEAL_1);
     }
 
     @Test

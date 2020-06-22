@@ -1,1 +1,0 @@
-DELETE FROM meals WHERE id > 100004;
