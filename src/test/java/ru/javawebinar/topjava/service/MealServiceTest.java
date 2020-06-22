@@ -13,17 +13,15 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
-import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -33,8 +31,6 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"), executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 public class MealServiceTest {
-
-
 
 
     static {
@@ -57,10 +53,9 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        int userId = USER_ID;
         int mealId = 100002;
         service.delete(mealId, USER_ID);
-        assertNull(repository.get(mealId, userId));
+        assertNull(repository.get(mealId, USER_ID));
     }
 
     @Test
@@ -72,10 +67,8 @@ public class MealServiceTest {
     }
 
     @Test
-    @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-    @Sql(scripts = "classpath:db/delete.sql", config = @SqlConfig(encoding = "UTF-8"))
     public void getAll() {
-        List<Meal> expectedMeals = new ArrayList<>(Arrays.asList(MEAL_3, MEAL_2, MEAL_1));
+        List<Meal> expectedMeals = new ArrayList<>(Arrays.asList(MEAL_7, MEAL_6, MEAL_5, MEAL_4, MEAL_3, MEAL_2, MEAL_1));
         List<Meal> actualMeals = service.getAll(USER_ID);
         assertMatch(expectedMeals, actualMeals);
 
@@ -85,7 +78,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.get(updated.getId(), USER_ID), updated);
+        assertMatch(service.get(MEAL_ID, USER_ID), updated);
     }
 
     @Test
@@ -95,6 +88,7 @@ public class MealServiceTest {
         Integer newId = created.getId();
         newMeal.setId(newId);
         assertMatch(service.get(newId, USER_ID), newMeal);
+        assertMatch(service.get(newId, USER_ID), created);
     }
 
     @Test
@@ -110,5 +104,24 @@ public class MealServiceTest {
     @Test
     public void updateIfWrongUser() {
         assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
+    }
+
+    @Test
+    public void getIfWrongMeal() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, ADMIN_ID));
+    }
+
+    @Test
+    public void deleteIfWrongMeal() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, ADMIN_ID));
+    }
+
+    @Test
+    public void updateIfWrongMeal() {
+        assertThrows(NotFoundException.class, () -> {
+            Meal updateMeal = getUpdated();
+            updateMeal.setId(NOT_FOUND);
+            service.update(updateMeal, ADMIN_ID);
+        });
     }
 }
