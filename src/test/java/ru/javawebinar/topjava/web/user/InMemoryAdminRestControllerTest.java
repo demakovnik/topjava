@@ -1,14 +1,12 @@
 package ru.javawebinar.topjava.web.user;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
+import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
@@ -24,12 +22,14 @@ public class InMemoryAdminRestControllerTest {
     private static InMemoryUserRepository repository;
 
     @BeforeClass
-    public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-inmemory.xml");
-        log.info("\n{}\n", Arrays.toString(appCtx.getBeanDefinitionNames()));
-        controller = appCtx.getBean(AdminRestController.class);
-        repository = appCtx.getBean(InMemoryUserRepository.class);
-    }
+        public static void beforeClass() {
+            appCtx = new AnnotationConfigApplicationContext(InMemoryUserRepository.class,
+                    AdminRestController.class, UserService.class);
+            log.info("\n{}\n", Arrays.toString(appCtx.getBeanDefinitionNames()));
+            repository = appCtx.getBean(InMemoryUserRepository.class);
+            controller = appCtx.getBean(AdminRestController.class);
+        }
+
 
     @AfterClass
     public static void afterClass() {
