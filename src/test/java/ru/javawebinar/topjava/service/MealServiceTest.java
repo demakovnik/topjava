@@ -13,7 +13,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,10 +27,8 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"), executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-)
+@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-
 
     static {
         // Only for postgres driver logging
@@ -53,7 +50,7 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        int mealId = 100002;
+        int mealId = MEAL_ID;
         service.delete(mealId, USER_ID);
         assertNull(repository.get(mealId, USER_ID));
     }
@@ -62,16 +59,15 @@ public class MealServiceTest {
     public void getBetweenInclusive() {
         LocalDate startDate = LocalDate.of(2020, 6, 1);
         LocalDate endDate = LocalDate.of(2020, 6, 1);
-        List<Meal> mealList = new ArrayList<>(Arrays.asList(MEAL_3, MEAL_2, MEAL_1));
+        List<Meal> mealList = Arrays.asList(MEAL_3, MEAL_2, MEAL_1);
         assertMatch(service.getBetweenInclusive(startDate, endDate, USER_ID), mealList);
     }
 
     @Test
     public void getAll() {
-        List<Meal> expectedMeals = new ArrayList<>(Arrays.asList(MEAL_7, MEAL_6, MEAL_5, MEAL_4, MEAL_3, MEAL_2, MEAL_1));
+        List<Meal> expectedMeals = Arrays.asList(MEAL_7, MEAL_6, MEAL_5, MEAL_4, MEAL_3, MEAL_2, MEAL_1);
         List<Meal> actualMeals = service.getAll(USER_ID);
         assertMatch(expectedMeals, actualMeals);
-
     }
 
     @Test
@@ -88,7 +84,7 @@ public class MealServiceTest {
         Integer newId = created.getId();
         newMeal.setId(newId);
         assertMatch(service.get(newId, USER_ID), newMeal);
-        assertMatch(service.get(newId, USER_ID), created);
+        assertMatch(created, newMeal);
     }
 
     @Test
