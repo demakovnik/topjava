@@ -36,7 +36,7 @@ public class MealTestData {
         LocalDateTime currentDateTime = MEAL.getDateTime();
         int currentCalories = MEAL.getCalories();
         String currentDescription = MEAL.getDescription();
-        updated.setCalories(currentCalories*10);
+        updated.setCalories(currentCalories * 10);
         updated.setDescription(currentDescription + " updated");
         updated.setDateTime(currentDateTime.plusDays(10));
         return updated;
