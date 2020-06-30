@@ -26,7 +26,7 @@ public class JpaMealRepository implements MealRepository {
         if (meal.isNew()) {
             em.persist(meal);
             return meal;
-        } else if (get(meal.getId(), userId) == null) {
+        } else if (get(meal.id(), userId) == null) {
             return null;
         }
         return em.merge(meal);
@@ -43,12 +43,9 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return em.createNamedQuery(Meal.GET, Meal.class)
-                .setParameter("id", id)
-                .setParameter("userId", userId)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
+        Meal meal = em.find(Meal.class, id);
+        return (meal != null && meal.getUser().id() == userId)
+                ? meal : null;
     }
 
     @Override
