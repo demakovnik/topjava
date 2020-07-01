@@ -3,7 +3,8 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.TestingRule;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -33,18 +34,22 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger log = getLogger(MealServiceTest.class);
-
     private static final StringBuilder finalString = new StringBuilder();
 
     @Rule
-    public TestingRule rule = new TestingRule(log, finalString);
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String result = String.format("%-32s %d ms\n", description.getMethodName(),
+                    TimeUnit.NANOSECONDS.toMillis(nanos));
+            log.info(result + "\n");
+            finalString.append(result);
+        }
+    };
 
     @AfterClass
     public static void printFinalString() {
-        log.info("\nTest results: " + finalString);
+        log.info("\nTest results:\n" + finalString);
     }
 
 
